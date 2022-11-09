@@ -50,17 +50,15 @@ namespace TCP {
     }
 
     void Socket::setNonBlocking(bool nonBlocking) {
-        if (_fd == -1)
-            throw std::runtime_error("Socket not created");
-        int flags = fcntl(_fd, F_GETFL, 0);
-        if (flags == -1)
-            throw std::runtime_error("Socket fcntl F_GETFL failed");
-        if (nonBlocking)
-            flags |= O_NONBLOCK;
-        else
-            flags &= ~O_NONBLOCK;
-        if (fcntl(_fd, F_SETFL, flags) == -1)
-            throw std::runtime_error("Socket fcntl F_SETFL failed");
+        if (nonBlocking) {
+            if (fcntl(_fd, F_SETFL, O_NONBLOCK) == -1)
+                throw std::runtime_error("fcntl() failed");
+        } else {
+            int oldfl;
+            if ((oldfl = fcntl(_fd, F_GETFL)) == -1)
+                throw std::runtime_error("fcntl() failed");
+            fcntl(_fd, F_SETFL, oldfl & ~O_NONBLOCK);
+        }
     }
 
     void Socket::setIPV6Only(bool ipv6Only) {
