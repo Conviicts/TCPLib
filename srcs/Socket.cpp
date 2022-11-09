@@ -18,19 +18,14 @@ namespace TCP {
     }
 
     void Socket::socket(int family) {
-        if (_fd != -1)
-            throw std::runtime_error("Socket already created");
-        _fd = ::socket(family, SOCK_STREAM, 0);
-        if (_fd == -1)
-            throw std::runtime_error("Socket creation failed");
+        if ((_fd = ::socket(family, SOCK_STREAM, IPPROTO_TCP)) == -1)
+            throw std::runtime_error("socket() failed");
     }
 
     void Socket::bind(const sockaddr *addr, socklen_t len) {
-        if (_fd == -1)
-            throw std::runtime_error("Socket not created");
         if (::bind(_fd, addr, len) == -1)
-            throw std::runtime_error("Socket binding failed");
-        std::memcpy(&_addr, addr, len);
+            throw std::runtime_error("bind() failed");
+        std::memcpy(&_addr, &addr, len);
     }
 
     int Socket::close() throw() {
@@ -41,12 +36,10 @@ namespace TCP {
         return ret;
     }
 
-    void Socket::setReuseAddr(bool reuse) {
-        if (_fd == -1)
-            throw std::runtime_error("Socket not created");
-        int opt = reuse ? 1 : 0;
-        if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
-            throw std::runtime_error("Socket option SO_REUSEADDR failed");
+    void Socket::setReuseAddr() {
+        int reuse = 1;
+        if (::setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) == -1)
+            throw std::runtime_error("setsockopt() failed");
     }
 
     void Socket::setNonBlocking(bool nonBlocking) {
@@ -61,13 +54,9 @@ namespace TCP {
         }
     }
 
-    void Socket::setIPV6Only(bool ipv6Only) {
-        if (_fd == -1)
-            throw std::runtime_error("Socket not created");
-        // if (family() != AF_INET6)
-        //     throw std::runtime_error("Socket is not IPV6");
-        int opt = ipv6Only ? 1 : 0;
-        if (setsockopt(_fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, sizeof(opt)) == -1)
-            throw std::runtime_error("Socket option IPV6_V6ONLY failed");
+    void Socket::setIPV6Only() {
+        int v6Only = 1;
+        if (::setsockopt(_fd, IPPROTO_IPV6, IPV6_V6ONLY, &v6Only, sizeof(v6Only)) == -1)
+            throw std::runtime_error("setsockopt() failed");
     }
 }

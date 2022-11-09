@@ -21,9 +21,9 @@ namespace TCP {
             void                    bind(const sockaddr *addr, socklen_t len);
             int                     close() throw();
 
-            void                    setReuseAddr(bool reuse);
+            void                    setReuseAddr();
             void                    setNonBlocking(bool nonBlocking);
-            void                    setIPV6Only(bool ipv6Only);
+            void                    setIPV6Only();
 
             protected:
                 int                 _fd;

@@ -46,10 +46,10 @@ namespace TCP {
             while (node && i < 2) {
                 TCP::unique_ptr<TCPListener> listener;
                 listener.reset(new TCPListener(node->ai_family));
-                listener->setReuseAddr(1);
+                listener->setReuseAddr();
                 listener->setNonBlocking(true);
                 if (node->ai_family == AF_INET6)
-                    listener->setIPV6Only(1);
+                    listener->setIPV6Only();
                 listener->bind(node->ai_addr, node->ai_addrlen);
                 listener->listen(maxQueueLen);
                 _listeners.push_back(listener.release());
