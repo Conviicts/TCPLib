@@ -66,8 +66,8 @@ namespace TCP {
     void Socket::setIPV6Only(bool ipv6Only) {
         if (_fd == -1)
             throw std::runtime_error("Socket not created");
-        if (family() != AF_INET6)
-            throw std::runtime_error("Socket is not IPV6");
+        // if (family() != AF_INET6)
+        //     throw std::runtime_error("Socket is not IPV6");
         int opt = ipv6Only ? 1 : 0;
         if (setsockopt(_fd, IPPROTO_IPV6, IPV6_V6ONLY, &opt, sizeof(opt)) == -1)
             throw std::runtime_error("Socket option IPV6_V6ONLY failed");
