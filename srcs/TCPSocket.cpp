@@ -41,29 +41,30 @@ namespace TCP {
     }
 
     bool TCPSocket::haveData() { 
-        if (_content == std::string::npos)
-            if ((_content = _readBuffer.find_first_of('\n')) == std::string::npos)
-                if ((_content = _readBuffer.find_first_of('\r')) == std::string::npos)
+        if (_content == std::string::npos) {
+            if ((_content = std::find(std::begin(_readBuffer), std::end(_readBuffer), '\n') == std::end(_readBuffer)))
+                if ((_content = std::find(std::begin(_readBuffer), std::end(_readBuffer), '\r') == std::end(_readBuffer)))
                     return false;
+        }
         return true;
     }
 
     bool TCPSocket::canRead() { return (haveData() || _canRead); }
 
-    bool TCPSocket::read(std::string &data) {
+    bool TCPSocket::read(std::vector<char> &data) {
         data.clear();
         if (!haveData() && !fill())
             return false;
         if (!haveData())
             return true;
-        data = _readBuffer.substr(0, _content + 1);
-        _readBuffer.erase(0, _content + 1);
+        data = _readBuffer;
+        _readBuffer.clear();
         _content = std::string::npos;
         return (true);
     }
 
-    void TCPSocket::write(const std::string &data) {
-        _writeBuffer += data + '\n';
+    void TCPSocket::write(const std::vector<char> &data) {
+        _writeBuffer.insert(_writeBuffer.end(), data.begin(), data.end());
     }
 
     bool TCPSocket::fill() {
@@ -74,7 +75,7 @@ namespace TCP {
             if (!(nb = recv(buffer, 2048)))
                 return false;
             buffer[nb > 0 ? nb : 0] = '\0';
-            _readBuffer += buffer;
+            _readBuffer.insert(_readBuffer.end(), buffer, buffer + strlen(buffer));
         }
         return true;
     }
@@ -83,7 +84,7 @@ namespace TCP {
         if (!_canWrite || bufferIsEmpty())
             return ;
         _canWrite = false;
-        send(_writeBuffer.c_str(), _writeBuffer.size());
+        send(_writeBuffer.data(), _writeBuffer.size());
         _writeBuffer.clear();
     }
 

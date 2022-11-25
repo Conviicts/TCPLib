@@ -21,7 +21,7 @@ namespace TCP {
         _hint.ai_flags = AI_PASSIVE;
         signal(SIGINT, abortSelect);
         signal(SIGPIPE, SIG_IGN);
-        siginterrupt(SIGINT, 1);
+        // siginterrupt(SIGINT, 1);
     }
 
     TCPServer::~TCPServer() throw() {
