@@ -10,6 +10,8 @@ file(GLOB SOURCES srcs/*.cpp)
 
 add_library(TCP ${SOURCES})
 
+target_compile_features(TCP PUBLIC cxx_std_11)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
