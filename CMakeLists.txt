@@ -6,7 +6,7 @@ enable_testing()
 
 include_directories(${PROJECT_SOURCE_DIR}/incs)
 
-file(GLOB SOURCES srcs/*.cpp)
+file(GLOB SOURCES srcs/*.cpp srcs/Packet/*.cpp)
 
 add_library(TCP ${SOURCES})
 
