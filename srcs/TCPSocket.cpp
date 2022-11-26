@@ -1,5 +1,7 @@
 #include "TCPSocket.hpp"
 
+#include <iostream>
+
 namespace TCP {
     TCPSocket::TCPSocket() : _content(std::string::npos), _canRead(false), _canWrite(false) { }
 
@@ -40,14 +42,15 @@ namespace TCP {
         return _writeBuffer.size();
     }
 
-    bool TCPSocket::haveData() { 
-        std::string tmp;
-        if (_readBuffer.size())
-            tmp = _readBuffer.data();
-        if (_content == std::string::npos)
-             if ((_content = tmp.find_first_of('\n')) == std::string::npos)
-                 if ((_content = tmp.find_first_of('\r')) == std::string::npos)
-                     return false;
+    bool TCPSocket::haveData() {
+        std::vector<char>::iterator it = std::find(_readBuffer.begin(), _readBuffer.end(), '\n');
+        std::vector<char>::iterator it2 = std::find(_readBuffer.begin(), _readBuffer.end(), '\r');
+
+        if (_content == 0) {
+            if (it == _readBuffer.end() || (_content = (it - _readBuffer.begin())) == 0)
+                if (it2 == _readBuffer.end() || (_content = (it2 - _readBuffer.begin())) == 0)
+                    return false;
+        }
         return true;
     }
 
@@ -59,9 +62,10 @@ namespace TCP {
             return false;
         if (!haveData())
             return true;
-        data = _readBuffer;
+        std::copy(_readBuffer.begin(), _readBuffer.end(), std::back_inserter(data));
+        // data = _readBuffer;
         _readBuffer.clear();
-        _content = std::string::npos;
+        _content = 0;
         return (true);
     }
 
