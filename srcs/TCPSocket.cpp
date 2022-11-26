@@ -41,11 +41,12 @@ namespace TCP {
     }
 
     bool TCPSocket::haveData() { 
-        if (_content == std::string::npos) {
-            if ((_content = std::find(std::begin(_readBuffer), std::end(_readBuffer), '\n') == std::end(_readBuffer)))
-                if ((_content = std::find(std::begin(_readBuffer), std::end(_readBuffer), '\r') == std::end(_readBuffer)))
-                    return false;
-        }
+        std::string tmp = _readBuffer.data();
+
+        if (_content == std::string::npos)
+             if ((_content = tmp.find_first_of('\n')) == std::string::npos)
+                 if ((_content = tmp.find_first_of('\r')) == std::string::npos)
+                     return false;
         return true;
     }
 
