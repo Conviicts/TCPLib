@@ -43,8 +43,8 @@ namespace TCP {
     }
 
     bool TCPSocket::haveData() {
-        std::vector<char>::iterator it = std::find(_readBuffer.begin(), _readBuffer.end(), '\n');
-        std::vector<char>::iterator it2 = std::find(_readBuffer.begin(), _readBuffer.end(), '\r');
+        ByteArray::iterator it = std::find(_readBuffer.begin(), _readBuffer.end(), '\n');
+        ByteArray::iterator it2 = std::find(_readBuffer.begin(), _readBuffer.end(), '\r');
 
         if (_content == 0) {
             if (it == _readBuffer.end() || (_content = (it - _readBuffer.begin())) == 0)
@@ -56,7 +56,7 @@ namespace TCP {
 
     bool TCPSocket::canRead() { return (haveData() || _canRead); }
 
-    bool TCPSocket::read(std::vector<char> &data) {
+    bool TCPSocket::read(ByteArray &data) {
         data.clear();
         if (!haveData() && !fill())
             return false;
@@ -69,7 +69,7 @@ namespace TCP {
         return (true);
     }
 
-    void TCPSocket::write(const std::vector<char> &data) {
+    void TCPSocket::write(const ByteArray &data) {
         _writeBuffer.insert(_writeBuffer.end(), data.begin(), data.end());
     }
 

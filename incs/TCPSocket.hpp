@@ -7,10 +7,10 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <stdexcept>
-#include <vector>
 #include <algorithm>
 
 #include "Socket.hpp"
+#include "Types.hpp"
 
 namespace TCP {
     class TCPSocket : public Socket {
@@ -28,8 +28,8 @@ namespace TCP {
             bool                haveData();
             bool                canRead();
 
-            bool                read(std::vector<char> &data);
-            void                write(const std::vector<char> &data);
+            bool                read(ByteArray &data);
+            void                write(const ByteArray &data);
 
             virtual bool		fill();
             virtual void		flush();
@@ -41,8 +41,8 @@ namespace TCP {
 
             std::string         _ip;
             std::string         _host;
-            std::vector<char>   _readBuffer;
-            std::vector<char>   _writeBuffer;
+            ByteArray           _readBuffer;
+            ByteArray           _writeBuffer;
 
             uint16_t            _port;
             size_t              _content;
