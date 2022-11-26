@@ -41,8 +41,9 @@ namespace TCP {
     }
 
     bool TCPSocket::haveData() { 
-        std::string tmp = _readBuffer.data();
-
+        std::string tmp;
+        if (_readBuffer.size())
+            tmp = _readBuffer.data();
         if (_content == std::string::npos)
              if ((_content = tmp.find_first_of('\n')) == std::string::npos)
                  if ((_content = tmp.find_first_of('\r')) == std::string::npos)
