@@ -75,10 +75,10 @@ namespace TCP {
 
     bool TCPSocket::fill() {
         if (_canRead) {
-            char buffer[2048 + 1];
+            char buffer[4096 + 1];
             int nb;
             _canRead = false;
-            if (!(nb = recv(buffer, 2048)))
+            if (!(nb = recv(buffer, 4096)))
                 return false;
             buffer[nb > 0 ? nb : 0] = '\0';
             _readBuffer.insert(_readBuffer.end(), buffer, buffer + strlen(buffer));
